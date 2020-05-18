@@ -13,7 +13,8 @@
     "node": "8"
   },
   "dependencies": {
-    "firebase-admin": "^8.10.0",
+    "@google-cloud/storage": "^5.0.0",
+    "firebase-admin": "^8.12.1",
     "firebase-functions": "^3.6.1",
     "ibm-watson": "^5.5.0"
   },
