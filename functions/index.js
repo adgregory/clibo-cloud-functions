@@ -1,6 +1,5 @@
 /* eslint-disable promise/always-return */
 const functions = require("firebase-functions");
-//const gcs = require('@google-cloud/storage');
 const path = require("path");
 const os = require("os");
 const { Storage } = require("@google-cloud/storage"); // Creates a client const storage = new Storage();
@@ -10,6 +9,7 @@ const VisualRecognitionV3 = require("ibm-watson/visual-recognition/v3");
 const NaturalLanguageCLassifierV1 = require("ibm-watson/natural-language-classifier/v1");
 const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
 const ToneAnalyzerV3 = require("ibm-watson/tone-analyzer/v3");
+const fse = require("fs-extra");
 const fs = require("fs");
 const { IamAuthenticator } = require("ibm-watson/auth");
 const parameters = require("./parameters.json");
@@ -41,15 +41,15 @@ const ToneAnalyzer = new ToneAnalyzerV3({
   url: parameters.TA_URL,
 });
 
- const firebaseAdmin = require('firebase-admin');
- const serviceAccount = require('./clibo_keys.json')
+const firebaseAdmin = require("firebase-admin");
+const serviceAccount = require("./clibo_keys.json");
 
 firebaseAdmin.initializeApp({
-    credential: firebaseAdmin.credential.cert(serviceAccount),
-    databaseURL: "https://ibm-challenge-d1eaa.firebaseio.com",
+  credential: firebaseAdmin.credential.cert(serviceAccount),
+  databaseURL: "https://ibm-challenge-d1eaa.firebaseio.com",
 });
 
-const db =  firebaseAdmin.firestore();
+const db = firebaseAdmin.firestore();
 
 // const bucket = async (imagen) => {
 //     let url = '';
@@ -183,7 +183,7 @@ const db =  firebaseAdmin.firestore();
 //     }).on('end', () => {
 //         console.log('Here');
 //     })
-//     .pipe(fs.createWriteStream(localFilename));
+//     .pipe(fse.createWriteStream(localFilename));
 // }
 // x('ibm-challenge-d1eaa.appspot.com','profile/yvqingvusrc_200x200.jpeg');
 
@@ -229,20 +229,23 @@ const db =  firebaseAdmin.firestore();
 //         console.log(tmpFilePath)
 //     });
 // });
-
+/**
+ *
+ */
 exports.testImages = functions.storage.object().onFinalize(async (object) => {
   const bucket = gcs.bucket(object.bucket);
   const filePath = object.name;
+  console.log(filePath);
+  const fileName = filePath.split('/')[1];
   const workingDir = path.join(os.tmpdir(), "images");
-  const tmpFilePath = path.join(workingDir, "lastImage.png");
-
-  const x = await bucket.file(filePath).download({
+  const tmpFilePath = path.join(workingDir, fileName);
+  await fse.ensureDir(workingDir);
+  await bucket.file(filePath).download({
     destination: tmpFilePath,
   });
-  console.log(x);
-
+  const stream = fs.createReadStream(tmpFilePath);
   const visualClassifyParamsExplicit = {
-    imagesFile: fs.readFileSync(tmpFilePath),
+    imagesFile: stream,
     classifierIds: parameters.VR_MODEL_ID_EXPLICIT,
     threshold: 0.6,
   };
@@ -251,7 +254,7 @@ exports.testImages = functions.storage.object().onFinalize(async (object) => {
     console.log(response);
   });
 
-  fs.remove(workingDir);
+  fse.remove(workingDir);
 });
 /**
  * Firebase Function
@@ -264,13 +267,17 @@ exports.languageClassifier = functions.https.onRequest((req, res) => {
   NaturalLanguageCLassifier.classify(params, (err, response) => {
     if (err) throw err;
     const { top_class } = response.result;
-    db.collection(USER_COLLECTION).doc(clientId).update({
-        preferences: top_class
-    }).then(value => {
-       return value;
-    }).catch(err => {
+    db.collection(USER_COLLECTION)
+      .doc(clientId)
+      .update({
+        preferences: top_class,
+      })
+      .then((value) => {
+        return value;
+      })
+      .catch((err) => {
         throw err;
-    });
-    res.send({ response : "¡Tus preferencias han sido seleccionadas!"});
+      });
+    res.send({ response: "¡Tus preferencias han sido seleccionadas!" });
   });
 });
