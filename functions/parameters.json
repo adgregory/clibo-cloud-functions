@@ -5,5 +5,9 @@
     "VR_MODEL_ID_EXPLICIT": "explicit",
     "LC_API_KEY": "Wnhxr9yFhFAHTucbzEBjmwj8jOGHf3cO5yXAYAr-42SZ",
     "LC_URL": "https://api.us-south.natural-language-classifier.watson.cloud.ibm.com/instances/79c25e35-9d4b-4832-ab1e-2a2bcdad2fa3",
-    "LC_MODEL_ID": "0c63adx736-nlc-114"
+    "LC_MODEL_ID": "0c63adx736-nlc-114",
+    "LT_API_KEY": "V0eVEkDBfd1TllAi_vNFbTVPA9gffdBebwSE0FKxsQBD",
+    "LT_URL": "https://api.us-south.language-translator.watson.cloud.ibm.com/instances/312cac07-8d5a-4567-a61d-a3db338608de",
+    "TA_API_KEY": "_4dXS6b6mhDuAnR1moVI7C5-XmWJbG6r15KzDakXBO3w",
+    "TA_URL": "https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/0097b90f-b679-4415-9999-9fa1787abbc3"
 }

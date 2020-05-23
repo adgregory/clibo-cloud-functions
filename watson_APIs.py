@@ -17,8 +17,8 @@ visual_recognition = VisualRecognitionV3(
     authenticator=authenticator
 )
 
-with open('images_Test/gym.jpg','rb') as images:
-    classes = visual_recognition.classify(images_file=images,threshold=0.5,classifier_ids='default').get_result()
+with open('images_Test/porn.jpg','rb') as images:
+    classes = visual_recognition.classify(images_file=images,threshold=0.5,classifier_ids='explicit').get_result()
 
 print(json.dumps(classes, indent=2))
 
