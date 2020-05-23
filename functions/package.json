@@ -17,6 +17,7 @@
     "child-process-promise": "^2.2.1",
     "firebase-admin": "^8.12.1",
     "firebase-functions": "^3.6.1",
+    "fs": "0.0.1-security",
     "fs-extra": "^9.0.0",
     "ibm-watson": "^5.5.0"
   },
