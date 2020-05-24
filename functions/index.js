@@ -56,47 +56,6 @@ firebaseAdmin.initializeApp({
 
 const db = firebaseAdmin.firestore();
 
-// const bucket = async (imagen) => {
-//     let url = '';
-//     // FOLDER COVER STREAMINGS --> VR_EXPLICIT, VR_GENERAL
-//     //const load = firebaseAdmin.storage().bucket();
-//     console.log(imagen)
-//     load.getFiles(async (error, files) => { //REVISAR
-//         url = await  files[1].getSignedUrl({
-//             action: 'read',
-//             expires: '09-20-2021'
-//         });
-
-
-/** WORKS
- *
- */
-// exports.testImages = functions.storage.object().onFinalize(async (object) => {
-//   const bucket = gcs.bucket(object.bucket);
-//   const filePath = object.name;
-//   console.log(filePath);
-//   const fileName = filePath.split('/')[1];
-//   const workingDir = path.join(os.tmpdir(), "images");
-//   const tmpFilePath = path.join(workingDir, fileName);
-//   await fse.ensureDir(workingDir);
-//   await bucket.file(filePath).download({
-//     destination: tmpFilePath,
-//   });
-//   const stream = fs.createReadStream(tmpFilePath);
-//   const visualClassifyParamsExplicit = {
-//     imagesFile: stream,
-//     classifierIds: parameters.VR_MODEL_ID_EXPLICIT,
-//     threshold: 0.6,
-//   };
-//   VisualRecognition.classify(visualClassifyParamsExplicit, (err, response) => {
-//     if (err) throw err;
-//     console.log(response);
-//   });
-
-//   fse.remove(workingDir);
-// });
-
-
 
 /** WORKS
  * Firebase Function Language Classifier 
@@ -124,129 +83,104 @@ exports.languageClassifier = functions.https.onRequest((req, res) => {
   });
 });
 
-/**
- * Returns translation from Es-En the comments of users in streamings. 
- * @param {String} translateText 
- */
-const languageTranslatorFunction = async (translateText) => {
-  const translateParams = {
-    text: translateText,
-    modelId: 'es-en',
-  };
-  LanguageTranslator.translate(translateParams)
-    .then(translationResult => {
-      let translation = translationResult.result.translations[0].translation;
-      //console.log(translation);
-      return translation;
-    })
-    .catch(err => {
-      console.log('error:', err);
-    });
-};
 
-/**
- * Returns Tones that describes the comments of users in streamings.
- * @param {Input from Translator} toneText 
- */
-const ToneAnalyzerFunction = async (toneText) => {
-  const toneParams = {
-    toneInput: { 'text': toneText },
-    contentType: 'application/json',
-  };
-  ToneAnalyzer.tone(toneParams)
-    .then(toneAnalysis => {
-      const tone = toneAnalysis.result.document_tone.tones
-      console.log(tone);
-      return tone
-    })
-    .catch(err => {
-      console.log('error', err);
-    });
-};
-
-/**
+/** WORKS
  * Firebase Function Tone Analysis
  * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/toneAnalysis
  */
 exports.toneAnalysis = functions.https.onRequest((req, res) => {
-  const { toneArray, streamingId } = req.body;
-  console.log(preferences);
+  const { comment } = req.body;
+  console.log(comment);
   let like = 0; //Counter for Joy tone in comments
   let dislike = 0; //Counter for Anger tone in comments
   let confidence = 0; //Counter for Confident tone in comments
-
-  for (const toneText in toneArray) {
-    const translaition = languageTranslarorFunction(toneText);
-    const tones = ToneAnalyzerFunction(translaition)
-    const scoreArray = [];
-    for (var i = 0; i < tones.length(); i++) {
-      scoreArray.concat(tones[i].score) //Get scores Array
-      let idx = scoreArray.indexOf(Math.max(scoreArray)); //Get index of max value in Array
+  const translateParams = {
+    text: comment,
+    modelId: 'es-en',
+  };
+  LanguageTranslator.translate(translateParams, (err,response)=> {
+    if(err){
+      console.log(err);
+    }else {
+      const translation = response.result.translations[0].translation;
+      console.log('Entra a Traduccion',translation)
+      const toneParams = {
+        toneInput: { 'text': translation },
+        contentType: 'application/json',
+      };
+      ToneAnalyzer.tone(toneParams, (err,response)=>{
+        if(err){
+          console.log(err)
+        } else{
+          const tone = response.result.document_tone.tones;
+          tone.sort((x,y)=>{
+            if(x.score>y.score){
+              return -1;
+            }else{
+              return 1;
+            } 
+          });
+          console.log('Condicional', tone)
+          let higherTone = tone[0].tone_name;
+          let output = "";
+          if(higherTone === 'Confident' || higherTone === 'Joy'){
+            output = "Like"
+            console.log(output)
+            res.status(200).send(output)
+          }else if(higherTone === 'Anger' || higherTone === 'Sadness' || higherTone === 'Fear'){
+            output = "Dislike"
+            console.log(output);
+            res.status(200).send(output)
+          }else if(higherTone === 'Analytical' || higherTone === 'Tentative'){
+            output = "Thoughtful"
+            console.log(output);
+            res.status(200).send(output)
+          }else{
+            console.log('No encontró un tono al comentario')
+            res.status(200).send('No encontró un tono al comentario')
+          }
+        }
+      });
     }
-    Tone_name = tones[idx].Tone_name
-    if (Tone_name === 'Anger' || Tone_name === 'Fear' || Tone_name === 'Sadness') {
-      dislike += 1;
-    } else if (Tone_name === 'Joy' || Tone_name === 'Confident') {
-      like += 1;
-    } else if (Tone_name === 'Analytical' || Tone_name === 'Tentative') {
-      confidence += 1;
-    }
-  }
-  let tone_Export = [dislike, like, confidence];
-  db.collection(STREAMING_COLLECTION)
-    .doc(streamingId)
-    .update({
-      tones_Streaming: tone_Export,
-    })
-    .then((value) => {
-      return value;
-    })
-    .catch((err) => {
-      throw err;
-    });
-  res.send({ response: 'Tus comentarios han sido analizados' });
+  });
 });
 
 
 
-/**
+/** WORKS
  * Firebase Function Visual Recognition Profiels
  * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/ImageProfileClassification
  */
 exports.ImageProfileClassification = functions.https.onRequest((req, res) => {
   const { url } = req.body;
-  // let image = new Stream();
-  //  https.get(url, response => {
-  //     console.log('Entro al get',url)
-  //     response.on('data', chunk => {
-  //       image.push(chunk);
-  //     });
-  //   });
-  // response.on('end', () => {
+  var classifier_ids = ["explicit"];
   const VisualClassifyParams_Explicit = {
     url: url,
-    classifiers: parameters.VR_MODEL_ID_EXPLICIT,
-    threshold: 0.6,
+    classifierIds: classifier_ids,//parameters.VR_MODEL_ID_EXPLICIT,
+    threshold: 0.5,
   };
-  console.log('Entra a on')
   VisualRecognition.classify(VisualClassifyParams_Explicit, (err, response) => {
     if (err) {
       console.log(err);
     } else {
       console.log('Entra a Clasificacion')
-      const classes = response.result.images[0].classifiers[0].classes;
-      let output = 0;
-      //console.log(classes)
-      if (classes[0] === 'explicit') {
-        output = 1;
-        res.sendStatus(output);//No aprobada
+      const classes = response.result.images[0].classifiers[0].classes[0].class
+      console.log('Pasa Clases',classes)
+      res.set('Access-Control-Allow-Origin', "*")
+      res.set('Access-Control-Allow-Methods', 'GET, POST')
+      res.set('Access-Control-Allow-Headers', 'Content-Type');
+      res.set('Access-Control-Max-Age', '3600');
+      if (classes === 'explicit') {
+        const output = 1;
+        console.log('Explicita',output)
+        res.status(200).send(output.toString()) //No aprobada
       } else {
-        output = 0;
-        res.sendStatus(output); //Aprobada
+        const output = 0;
+        console.log('No Explicita',output)
+        res.status(200).send(output.toString())//Aprobada
       }
     }
   });
-  //});
 });
 
 
@@ -267,7 +201,7 @@ exports.ImageStreamingClassification = functions.https.onRequest((req, res) => {
   response.on('end', () => {
     const VisualClassifyParams_General = {
       imagesFile: image.read(),
-      classifiers: parameters.VR_MODEL_ID_GENERAL,
+      classifier_ids: parameters.VR_MODEL_ID_GENERAL,
       threshold: 0.5,
     };
     VisualRecognition.classify(VisualClassifyParams_General, (err, response) => {
@@ -279,10 +213,10 @@ exports.ImageStreamingClassification = functions.https.onRequest((req, res) => {
         //console.log(classes)
         if (classes.indexOf('food') !== null) {
           output = 'Cocina'
-          res.send(output)
+          res.status(200).send(output)
         } else if (classes.indexOf('sports equipment') !== null) {
           output = 'Entrenamiento'
-          res.send(output)
+          res.status(200).send(output)
         }
       }
     });
