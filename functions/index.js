@@ -4,7 +4,7 @@ const path = require("path");
 const os = require("os");
 const { Storage } = require("@google-cloud/storage"); // Creates a client const storage = new Storage();
 const gcs = new Storage();
-const Stream = require('stream');
+const Stream = require('stream').Transform;
 // IBM API
 const VisualRecognitionV3 = require("ibm-watson/visual-recognition/v3");
 const NaturalLanguageCLassifierV1 = require("ibm-watson/natural-language-classifier/v1");
@@ -14,6 +14,10 @@ const fse = require("fs-extra");
 const fs = require("fs");
 const { IamAuthenticator } = require("ibm-watson/auth");
 const parameters = require("./parameters.json");
+const https = require('https')
+const USER_COLLECTION = 'user';
+
+
 
 //IBM FUNCTIONS
 
@@ -67,36 +71,36 @@ const db = firebaseAdmin.firestore();
 /** WORKS
  *
  */
-exports.testImages = functions.storage.object().onFinalize(async (object) => {
-  const bucket = gcs.bucket(object.bucket);
-  const filePath = object.name;
-  console.log(filePath);
-  const fileName = filePath.split('/')[1];
-  const workingDir = path.join(os.tmpdir(), "images");
-  const tmpFilePath = path.join(workingDir, fileName);
-  await fse.ensureDir(workingDir);
-  await bucket.file(filePath).download({
-    destination: tmpFilePath,
-  });
-  const stream = fs.createReadStream(tmpFilePath);
-  const visualClassifyParamsExplicit = {
-    imagesFile: stream,
-    classifierIds: parameters.VR_MODEL_ID_EXPLICIT,
-    threshold: 0.6,
-  };
-  VisualRecognition.classify(visualClassifyParamsExplicit, (err, response) => {
-    if (err) throw err;
-    console.log(response);
-  });
+// exports.testImages = functions.storage.object().onFinalize(async (object) => {
+//   const bucket = gcs.bucket(object.bucket);
+//   const filePath = object.name;
+//   console.log(filePath);
+//   const fileName = filePath.split('/')[1];
+//   const workingDir = path.join(os.tmpdir(), "images");
+//   const tmpFilePath = path.join(workingDir, fileName);
+//   await fse.ensureDir(workingDir);
+//   await bucket.file(filePath).download({
+//     destination: tmpFilePath,
+//   });
+//   const stream = fs.createReadStream(tmpFilePath);
+//   const visualClassifyParamsExplicit = {
+//     imagesFile: stream,
+//     classifierIds: parameters.VR_MODEL_ID_EXPLICIT,
+//     threshold: 0.6,
+//   };
+//   VisualRecognition.classify(visualClassifyParamsExplicit, (err, response) => {
+//     if (err) throw err;
+//     console.log(response);
+//   });
 
-  fse.remove(workingDir);
-});
+//   fse.remove(workingDir);
+// });
 
 
 
 /** WORKS
  * Firebase Function Language Classifier 
- * {Url} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/languageClassifier
+ * {URL}: https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/languageClassifier
  */
 exports.languageClassifier = functions.https.onRequest((req, res) => {
   const { preferences, clientId } = req.body;
@@ -122,7 +126,7 @@ exports.languageClassifier = functions.https.onRequest((req, res) => {
 
 /**
  * Returns translation from Es-En the comments of users in streamings. 
- * @param {*} translateText 
+ * @param {String} translateText 
  */
 const languageTranslatorFunction = async (translateText) => {
   const translateParams = {
@@ -211,36 +215,38 @@ exports.toneAnalysis = functions.https.onRequest((req, res) => {
  */
 exports.ImageProfileClassification = functions.https.onRequest((req, res) => {
   const { url } = req.body;
-  //console.log(url);
-  let image = new Stream();
-  https.get(url, response => {
-    response.on('data', chunk => {
-      image.push(chunk);
-    });
-  });
-  response.on('end', () => {
-    const VisualClassifyParams_Explicit = {
-      imagesFile: image.read(),
-      classifiers: parameters.VR_MODEL_ID_EXPLICIT,
-      threshold: 0.6,
-    };
-    VisualRecognition.classify(VisualClassifyParams_Explicit, (err, response) => {
-      if (err) {
-        console.log(err);
+  // let image = new Stream();
+  //  https.get(url, response => {
+  //     console.log('Entro al get',url)
+  //     response.on('data', chunk => {
+  //       image.push(chunk);
+  //     });
+  //   });
+  // response.on('end', () => {
+  const VisualClassifyParams_Explicit = {
+    url: url,
+    classifiers: parameters.VR_MODEL_ID_EXPLICIT,
+    threshold: 0.6,
+  };
+  console.log('Entra a on')
+  VisualRecognition.classify(VisualClassifyParams_Explicit, (err, response) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Entra a Clasificacion')
+      const classes = response.result.images[0].classifiers[0].classes;
+      let output = 0;
+      //console.log(classes)
+      if (classes[0] === 'explicit') {
+        output = 1;
+        res.sendStatus(output);//No aprobada
       } else {
-        const classes = response.result.images[0].classifiers[0].classes;
-        let output = 0;
-        //console.log(classes)
-        if (classes[0] === 'explicit') {
-          output = 1;
-          res.send(output);//No aprobada
-        } else {
-          output = 0;
-          res.send(output); //Aprobada
-        }
+        output = 0;
+        res.sendStatus(output); //Aprobada
       }
-    });
+    }
   });
+  //});
 });
 
 
@@ -255,6 +261,7 @@ exports.ImageStreamingClassification = functions.https.onRequest((req, res) => {
   https.get(url, response => {
     response.on('data', chunk => {
       image.push(chunk);
+
     });
   });
   response.on('end', () => {
@@ -270,12 +277,12 @@ exports.ImageStreamingClassification = functions.https.onRequest((req, res) => {
         const classes = response.result.images[0].classifiers[0].classes;
         let output = "";
         //console.log(classes)
-        if(classes.indexOf('food')!==null){
+        if (classes.indexOf('food') !== null) {
           output = 'Cocina'
           res.send(output)
-        }else if(classes.indexOf('sports equipment')!== null){
-            output = 'Entrenamiento'
-            res.send(output)
+        } else if (classes.indexOf('sports equipment') !== null) {
+          output = 'Entrenamiento'
+          res.send(output)
         }
       }
     });
