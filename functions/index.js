@@ -4,6 +4,7 @@ const path = require("path");
 const os = require("os");
 const { Storage } = require("@google-cloud/storage"); // Creates a client const storage = new Storage();
 const gcs = new Storage();
+const Stream = require('stream');
 // IBM API
 const VisualRecognitionV3 = require("ibm-watson/visual-recognition/v3");
 const NaturalLanguageCLassifierV1 = require("ibm-watson/natural-language-classifier/v1");
@@ -34,7 +35,7 @@ const LanguageTranslator = new LanguageTranslatorV3({
   authenticator: new IamAuthenticator({ apikey: parameters.LT_API_KEY }),
   url: parameters.LT_URL,
 });
-
+3
 const ToneAnalyzer = new ToneAnalyzerV3({
   version: "2017-09-21",
   authenticator: new IamAuthenticator({ apikey: parameters.TA_API_KEY }),
@@ -61,175 +62,9 @@ const db = firebaseAdmin.firestore();
 //             action: 'read',
 //             expires: '09-20-2021'
 //         });
-//     //console.log(url[0])
-//     if (files[0].name.slice(0,7)=="profile"){ //files.length-1
-//         console.log('Entro a Profile')
-//         let image = new Stream();
-//         https.get(url[0], response => {
-//             console.log(url[0])
-//             response.on('data', chunk => {
-//                 image.push(chunk);
-//             });
-//             response.on('end', () => {
-//                 //NEW (1)
-//                 const VisualClassifyParams_Explicit = {
-//                     imagesFile: image.read(),
-//                     classifierIds: parameters.VR_MODEL_ID_EXPLICIT,
-//                     threshold: 0.6,
-//                 };
-//                 VisualRecognition.classify(VisualClassifyParams_Explicit, function (err, response) {
-//                     if (err) {
-//                         console.log(err);
-//                     } else {
-//                         const vr = JSON.stringify(response, null, 2)
-//                         const classes = response.result.images[0].classifiers[0].classes;
-//                         //console.log(classes)
-//                         if (classes[0] == 'explicit'){
-//                             console.log('0') //No aprobada
-//                         }else{
-//                             console.log('1') //Aprobada
-//                         }
-//                     }
-//                 });
-//             })
-//         });
-//     } else if(files[0].name.slice(0,5)=='cover'){//files.length-1
-//         console.log('Entro a Cover')
-//         let image = new Stream();
-//         https.get(url[0], response => {
-//             //console.log(url[0])
-//             response.on('data', chunk => {
-//                 image.push(chunk);
-//             });
-//             response.on('end', () => {
-//                 //console.log(image);
-//                 const VisualClassifyParams_General = {
-//                     imagesFile: image.read(),
-//                     classifierIds: parameters.VR_MODEL_ID,
-//                     threshold: 0.6,
-//                 };
-//                 //NEW (1)
-//                 const VisualClassifyParams_Explicit = {
-//                     imagesFile: image.read(),
-//                     classifierIds: parameters.VR_MODEL_ID_EXPLICIT,
-//                     threshold: 0.6,
-//                 };
 
-//                 VisualRecognition.classify(VisualClassifyParams_Explicit, function (err, response) {
-//                     if (err) {
-//                         console.log(err);
-//                     } else {
-//                         const vr = JSON.stringify(response, null, 2)
-//                         const classes = response.result.images[0].classifiers[0].classes;
-//                         if (classes[0]=='explicit'){
-//                             console.log('0') //No aprobada
-//                         } else{
-//                             VisualRecognition.classify(VisualClassifyParams_General, function (err,response){
-//                                 if (err){
-//                                     console.log(err);
-//                                 } else {
-//                                     const vr2 = JSON.stringify(response, null, 2)
-//                                     const classes2 = response.result.images[0].classifiers[0].classes;
-//                                     console.log(classes2)
-//                                 };
 
-//                             });
-//                         }
-//                         //console.log(classes)
-//                     }
-//                 });
-//             })
-//         });
-//     } else if (files[files.length-1].slice(0,5)=='texto'){
-//         const classifyParamsText = {
-//             text: 'Me gusta la cuk',
-//             classifierId: parameters.LC_MODEL_ID
-//         };
-
-//         NaturalLanguageCLassifier.classify(classifyParamsText, function (err,response){
-//             if(err){
-//                 console.log(err);
-//             } else{
-//                 const lc = JSON.stringify(response, null, 2)
-//                 const classesLC = response.result.classes;
-//                 console.log(classesLC)
-//             };
-
-//         });
-//     };
-
-//      });
-//     //console.log(url);
-// }
-
-// exports.Classification = functions.storage.object().onFinalize(async event => {
-//     const bucket = gcs.Bucket(event.bucket);
-//     const path = event.name;
-//     const fileName = path.split('/').pop();
-//     const bucketDir = dirname(path);
-//     await bucket.file(path).createReadStream()
-//     .on('data', (data) => {
-//         console.log(data)
-//     })
-// });
-
-// const x = async(bucket2, filePath) => {
-//     const bucket = storage.bucket(bucket2);
-//     const fileName = filePath.split('/').pop();
-//     const bucketDir = path.dirname(filePath);
-//     const localFilename = './image.jpeg'
-//     const stream = await bucket.file(filePath).createReadStream().on('response', response => {
-//         console.log(response);
-//     }).on('end', () => {
-//         console.log('Here');
-//     })
-//     .pipe(fse.createWriteStream(localFilename));
-// }
-// x('ibm-challenge-d1eaa.appspot.com','profile/yvqingvusrc_200x200.jpeg');
-
-// Function Translate
-// const translateParams = {
-//     text: 'Me parece muy vulgar este contenido',
-//     modelId: 'es-en'
-// };
-
-// LanguageTranslator.translate(translateParams)
-//   .then(translationResult => {
-//     let translation = translationResult.result.translations[0].translation
-//     //console.log(translation);
-//     const toneParams = {
-//         toneInput: { 'text': translation },
-//         contentType: 'application/json',
-//     };
-//     ToneAnalyzer.tone(toneParams)
-//       .then(toneAnalysis => {
-//         let tone = toneAnalysis.result.document_tone.tones
-//         console.log(tone);
-//       })
-//       .catch(err => {
-//         console.log('error:', err);
-//       });
-//   })
-//   .catch(err => {
-//     console.log('error:', err);
-//   });
-
-//INTENTO 1
-// exports.testImages = functions.storage.object().onFinalize((event) => {
-//     const bucket = event.bucket;
-//     const contentType = event.contentType;
-//     const filePath = event.name;
-//     console.log('File download started');
-//     const destBucket = gcs.bucket(bucket);
-//     const tmpFilePath = path.join(os.tmpdir(), path.basename(filePath))
-//     const metadata = {contentType: contentType};
-//     return destBucket.file(filePath).download({
-//         destination: tmpFilePath
-//     }).then(() => {
-//         console.log(tmpFilePath)
-//     });
-// });
-/**
+/** WORKS
  *
  */
 exports.testImages = functions.storage.object().onFinalize(async (object) => {
@@ -256,8 +91,11 @@ exports.testImages = functions.storage.object().onFinalize(async (object) => {
 
   fse.remove(workingDir);
 });
-/**
- * Firebase Function
+
+
+
+/** WORKS
+ * Firebase Function Language Classifier 
  * {Url} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/languageClassifier
  */
 exports.languageClassifier = functions.https.onRequest((req, res) => {
@@ -281,3 +119,167 @@ exports.languageClassifier = functions.https.onRequest((req, res) => {
     res.send({ response: "¡Tus preferencias han sido seleccionadas!" });
   });
 });
+
+/**
+ * Returns translation from Es-En the comments of users in streamings. 
+ * @param {*} translateText 
+ */
+const languageTranslatorFunction = async (translateText) => {
+  const translateParams = {
+    text: translateText,
+    modelId: 'es-en',
+  };
+  LanguageTranslator.translate(translateParams)
+    .then(translationResult => {
+      let translation = translationResult.result.translations[0].translation;
+      //console.log(translation);
+      return translation;
+    })
+    .catch(err => {
+      console.log('error:', err);
+    });
+};
+
+/**
+ * Returns Tones that describes the comments of users in streamings.
+ * @param {Input from Translator} toneText 
+ */
+const ToneAnalyzerFunction = async (toneText) => {
+  const toneParams = {
+    toneInput: { 'text': toneText },
+    contentType: 'application/json',
+  };
+  ToneAnalyzer.tone(toneParams)
+    .then(toneAnalysis => {
+      const tone = toneAnalysis.result.document_tone.tones
+      console.log(tone);
+      return tone
+    })
+    .catch(err => {
+      console.log('error', err);
+    });
+};
+
+/**
+ * Firebase Function Tone Analysis
+ * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/toneAnalysis
+ */
+exports.toneAnalysis = functions.https.onRequest((req, res) => {
+  const { toneArray, streamingId } = req.body;
+  console.log(preferences);
+  let like = 0; //Counter for Joy tone in comments
+  let dislike = 0; //Counter for Anger tone in comments
+  let confidence = 0; //Counter for Confident tone in comments
+
+  for (const toneText in toneArray) {
+    const translaition = languageTranslarorFunction(toneText);
+    const tones = ToneAnalyzerFunction(translaition)
+    const scoreArray = [];
+    for (var i = 0; i < tones.length(); i++) {
+      scoreArray.concat(tones[i].score) //Get scores Array
+      let idx = scoreArray.indexOf(Math.max(scoreArray)); //Get index of max value in Array
+    }
+    Tone_name = tones[idx].Tone_name
+    if (Tone_name === 'Anger' || Tone_name === 'Fear' || Tone_name === 'Sadness') {
+      dislike += 1;
+    } else if (Tone_name === 'Joy' || Tone_name === 'Confident') {
+      like += 1;
+    } else if (Tone_name === 'Analytical' || Tone_name === 'Tentative') {
+      confidence += 1;
+    }
+  }
+  let tone_Export = [dislike, like, confidence];
+  db.collection(STREAMING_COLLECTION)
+    .doc(streamingId)
+    .update({
+      tones_Streaming: tone_Export,
+    })
+    .then((value) => {
+      return value;
+    })
+    .catch((err) => {
+      throw err;
+    });
+  res.send({ response: 'Tus comentarios han sido analizados' });
+});
+
+
+
+/**
+ * Firebase Function Visual Recognition Profiels
+ * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/ImageProfileClassification
+ */
+exports.ImageProfileClassification = functions.https.onRequest((req, res) => {
+  const { url } = req.body;
+  //console.log(url);
+  let image = new Stream();
+  https.get(url, response => {
+    response.on('data', chunk => {
+      image.push(chunk);
+    });
+  });
+  response.on('end', () => {
+    const VisualClassifyParams_Explicit = {
+      imagesFile: image.read(),
+      classifiers: parameters.VR_MODEL_ID_EXPLICIT,
+      threshold: 0.6,
+    };
+    VisualRecognition.classify(VisualClassifyParams_Explicit, (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const classes = response.result.images[0].classifiers[0].classes;
+        let output = 0;
+        //console.log(classes)
+        if (classes[0] === 'explicit') {
+          output = 1;
+          res.send(output);//No aprobada
+        } else {
+          output = 0;
+          res.send(output); //Aprobada
+        }
+      }
+    });
+  });
+});
+
+
+/**
+ * Firebase Function Visual Recognition Profiels
+ * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/ImageStreamingClassification
+ */
+exports.ImageStreamingClassification = functions.https.onRequest((req, res) => {
+  const { url } = req.body;
+  //console.log(url);
+  let image = new Stream();
+  https.get(url, response => {
+    response.on('data', chunk => {
+      image.push(chunk);
+    });
+  });
+  response.on('end', () => {
+    const VisualClassifyParams_General = {
+      imagesFile: image.read(),
+      classifiers: parameters.VR_MODEL_ID_GENERAL,
+      threshold: 0.5,
+    };
+    VisualRecognition.classify(VisualClassifyParams_General, (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const classes = response.result.images[0].classifiers[0].classes;
+        let output = "";
+        //console.log(classes)
+        if(classes.indexOf('food')!==null){
+          output = 'Cocina'
+          res.send(output)
+        }else if(classes.indexOf('sports equipment')!== null){
+            output = 'Entrenamiento'
+            res.send(output)
+        }
+      }
+    });
+  });
+});
+
+

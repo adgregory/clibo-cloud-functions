@@ -1,7 +1,7 @@
 {
     "VR_API_KEY": "Vz5eLNJkxK9vTfgJDYtRqhjEIEA_3uqQFrnAswDQCXBQ",
     "VR_URL": "https://api.us-south.visual-recognition.watson.cloud.ibm.com/instances/f9fecabe-c905-48d2-918a-3de935053c2c",
-    "VR_MODEL_ID": "default",
+    "VR_MODEL_ID_GENERAL": "default",
     "VR_MODEL_ID_EXPLICIT": "explicit",
     "LC_API_KEY": "Wnhxr9yFhFAHTucbzEBjmwj8jOGHf3cO5yXAYAr-42SZ",
     "LC_URL": "https://api.us-south.natural-language-classifier.watson.cloud.ibm.com/instances/79c25e35-9d4b-4832-ab1e-2a2bcdad2fa3",
