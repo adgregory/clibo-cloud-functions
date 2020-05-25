@@ -90,64 +90,61 @@ const languageClassifier = (req, res) => {
  * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/toneAnalysis
  */
 const toneAnalysis = (req, res) => {
-  const { comment } = req.body;
-  console.log(comment);
+  const { comments } = req.body;
   let like = 0; //Counter for Joy tone in comments
   let dislike = 0; //Counter for Anger tone in comments
   let confidence = 0; //Counter for Confident tone in comments
-  const translateParams = {
-    text: comment,
-    modelId: "es-en",
-  };
-  LanguageTranslator.translate(translateParams, (err, response) => {
-    if (err) {
-      console.log(err);
-    } else {
-      const translation = response.result.translations[0].translation;
-      console.log("Entra a Traduccion", translation);
-      const toneParams = {
-       toneInput: { text: translation },
-        contentType: "application/json",
-      };
-      ToneAnalyzer.tone(toneParams, (err, response) => {
-        if (err) {
-          console.log(err);
-        } else {
-          const tone = response.result.document_tone.tones;
-          tone.sort((x, y) => {
-            if (x.score > y.score) {
-              return -1;
-            } else {
-              return 1;
-            }
-          });
-          console.log("Condicional", tone);
-          let higherTone = tone[0].tone_name;
-          let output = "";
-          if (higherTone === "Confident" || higherTone === "Joy") {
-            output = "Like";
-            res.status(200).send(output);
-          } else if (
-            higherTone === "Anger" ||
-            higherTone === "Sadness" ||
-            higherTone === "Fear"
-          ) {
-            output = "Dislike";
-            res.status(200).send(output);
-          } else if (
-            higherTone === "Analytical" ||
-            higherTone === "Tentative"
-          ) {
-            output = "Thoughtful";
-            res.status(200).send(output);
+  
+  comments.forEach(comment => {
+    const translateParams = {
+      text: comment.text,
+      modelId: "es-en",
+    };
+    LanguageTranslator.translate(translateParams, (err, response) => {
+      if (err) {
+        throw err;
+      } else {
+        const translation = response.result.translations[0].translation;
+        console.log("Entra a Traduccion", translation);
+        const toneParams = {
+         toneInput: { text: translation },
+          contentType: "application/json",
+        };
+        ToneAnalyzer.tone(toneParams, (err, response) => {
+          if (err) {
+            throw err;
           } else {
-            console.log("No encontró un tono al comentario");
-            res.status(200).send("No encontró un tono al comentario");
+            const tone = response.result.document_tone.tones;
+            tone.sort((x, y) => {
+              if (x.score > y.score) {
+                return -1;
+              } else {
+                return 1;
+              }
+            });
+            let higherTone = tone[0].tone_name;
+            let output = "";
+            if (higherTone === "Confident" || higherTone === "Joy") {
+              like+=1;
+             // res.status(200).send(output);
+            } else if (
+              higherTone === "Anger" ||
+              higherTone === "Sadness" ||
+              higherTone === "Fear"
+            ) {
+              dislike += 1;
+            } else if (
+              higherTone === "Analytical" ||
+              higherTone === "Tentative"
+            ) {
+              confidence += 1;
+            }
           }
-        }
-      });
-    }
+        });
+      }
+    });
   });
+  res.status(200).send({ like, dislike, thoughtful: confidence});
 };
 
 /** WORKS
