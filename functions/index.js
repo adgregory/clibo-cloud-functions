@@ -1,6 +1,6 @@
 /* eslint-disable promise/always-return */
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 const app = express();
 const functions = require("firebase-functions");
 const path = require("path");
@@ -64,7 +64,7 @@ const db = firebaseAdmin.firestore();
  * {URL}: https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/languageClassifier
  */
 const languageClassifier = (req, res) => {
-  const { preferences, clientId} = req.body;
+  const { preferences, clientId } = req.body;
   console.log(preferences);
   const params = { text: preferences, classifierId: parameters.LC_MODEL_ID };
   NaturalLanguageCLassifier.classify(params, (err, response) => {
@@ -73,16 +73,16 @@ const languageClassifier = (req, res) => {
     } else {
       const top_class = response.result.top_class;
       db.collection(USER_COLLECTION)
-      .doc(clientId)
-      .update({
-        preferences: top_class,
-      })
-      .then((value) => {
-        return value;
-      })
-      .catch((err) => {
-        throw err;
-      });
+        .doc(clientId)
+        .update({
+          preferences: top_class,
+        })
+        .then((value) => {
+          return value;
+        })
+        .catch((err) => {
+          throw err;
+        });
       res.send({ response: "¡Tus preferencias han sido seleccionadas!" });
     }
   });
@@ -92,62 +92,79 @@ const languageClassifier = (req, res) => {
  * Firebase Function Tone Analysis
  * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/toneAnalysis
  */
-const toneAnalysis = (req, res) => {
+const toneAnalysis = async (req, res) => {
   const { comments } = req.body;
-  let like = 0; //Counter for Joy tone in comments
-  let dislike = 0; //Counter for Anger tone in comments
-  let confidence = 0; //Counter for Confident tone in comments
+  translateAndAnalyse(comments)
+    .then((response) => res.status(200).send(response))
+    .catch((error) => res.status(404).send("Ha ocurrido un error" + error));
+};
 
-  comments.forEach(comment => {
-    const translateParams = {
-      text: comment.text,
-      modelId: "es-en",
-    };
-    LanguageTranslator.translate(translateParams, (err, response) => {
-      if (err) {
-        throw err;
-      } else {
-        const translation = response.result.translations[0].translation;
-        console.log("Entra a Traduccion", translation);
-        const toneParams = {
-          toneInput: { text: translation },
-          contentType: "application/json",
-        };
-        ToneAnalyzer.tone(toneParams, (err, response) => {
-          if (err) {
-            throw err;
-          } else {
-            const tone = response.result.document_tone.tones;
-            tone.sort((x, y) => {
-              if (x.score > y.score) {
-                return -1;
-              } else {
-                return 1;
-              }
-            });
-            let higherTone = tone[0].tone_name;
-            let output = "";
-            if (higherTone === "Confident" || higherTone === "Joy") {
-              like += 1;
-              // res.status(200).send(output);
-            } else if (
-              higherTone === "Anger" ||
-              higherTone === "Sadness" ||
-              higherTone === "Fear"
-            ) {
-              dislike += 1;
-            } else if (
-              higherTone === "Analytical" ||
-              higherTone === "Tentative"
-            ) {
-              confidence += 1;
+const translateAndAnalyse = (comments) => {
+  let promises = [];
+  return new Promise((resolve, reject) => {
+    let like = 0; //Counter for Joy tone in comments
+    let dislike = 0; //Counter for Anger tone in comments
+    let confidence = 0; //Counter for Confident tone in comments
+    for (let index = 0; index < comments.length; index++) {
+      const comment = comments[index];
+      const translateParams = {
+        text: comment.text,
+        modelId: "es-en",
+      };
+      promises.push(
+        // eslint-disable-next-line no-loop-func
+        new Promise((resolve, reject) => {
+          LanguageTranslator.translate(translateParams, (err, response) => {
+            if (err) {
+              throw reject(err);
+            } else {
+              const translation = response.result.translations[0].translation;
+              const toneParams = {
+                toneInput: { text: translation },
+                contentType: "application/json",
+              };
+              ToneAnalyzer.tone(toneParams, (err, response) => {
+                if (err) {
+                  throw reject(err);
+                } else {
+                  console.log("Tone ana...");
+                  const tone = response.result.document_tone.tones;
+                  tone.sort((x, y) => {
+                    y.score - x.score;
+                  });
+                  let higherTone = tone[0].tone_name;
+                  let output = "";
+                  if (higherTone === "Confident" || higherTone === "Joy") {
+                    like += 1;
+                    console.log(like);
+                  } else if (
+                    higherTone === "Anger" ||
+                    higherTone === "Sadness" ||
+                    higherTone === "Fear"
+                  ) {
+                    dislike += 1;
+                    console.log(dislike);
+                  } else if (
+                    higherTone === "Analytical" ||
+                    higherTone === "Tentative"
+                  ) {
+                    confidence += 1;
+                    console.log(confidence);
+                  }
+                }
+                resolve(true);
+              });
             }
-          }
-        });
-      }
-    });
+          });
+        })
+      );
+    }
+    Promise.all(promises)
+      .then((values) => {
+        resolve({ like, dislike, thoughtful: confidence });
+      })
+      .catch((error) => reject(error));
   });
-  res.status(200).send({ like, dislike, thoughtful: confidence });
 };
 
 /** WORKS
@@ -157,8 +174,8 @@ const toneAnalysis = (req, res) => {
 const imageProfileClassification = (req, res) => {
   console.log(req.method);
   const { url } = req.body;
-  if (req.method === 'OPTIONS') {
-    res.status(204).send('');
+  if (req.method === "OPTIONS") {
+    res.status(204).send("");
   }
   var classifier_ids = ["explicit"];
   const VisualClassifyParams_Explicit = {
@@ -185,7 +202,6 @@ const imageProfileClassification = (req, res) => {
   });
 };
 
-
 /**
  * Firebase Function Visual Recognition Profiels
  * {URL} https://us-central1-ibm-challenge-d1eaa.cloudfunctions.net/ImageStreamingClassification
@@ -197,46 +213,44 @@ const imageStreamingClassification = (req, res) => {
     classifierIds: parameters.VR_MODEL_ID_GENERAL,
     threshold: 0.5,
   };
-  VisualRecognition.classify(
-    VisualClassifyParams_General,
-    (err, response) => {
-      if (err) {
-        console.log(err);
-      } else {
-        const classes = response.result.images[0].classifiers[0].classes;
-        let output = "";
-        for(var i = 0; i<classes.length;i++){
-          if(classes[i].class==="food"){
-            output = {"value":"Cocina"};
-            break;
-          }else if(classes[i].class==="sports equipment"){
-            output = {"value":"Entrenamiento"};
-            break;
-          }else if(
-            classes[i].class==="disk jockey" ||
-            classes[i].class==="musician"||
-            classes[i].class==="entertainer"||
-            classes[i].class==="disco" ||
-            classes[i].class==="nightclub"
-            ){
-            output = {"value":"Entretenimiento"};
-            break;
-          }else{
-            output = {"value":"Clases"};
-          }
+  VisualRecognition.classify(VisualClassifyParams_General, (err, response) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const classes = response.result.images[0].classifiers[0].classes;
+      let output = "";
+      for (var i = 0; i < classes.length; i++) {
+        if (classes[i].class === "food") {
+          output = { value: "Cocina" };
+          break;
+        } else if (classes[i].class === "sports equipment") {
+          output = { value: "Entrenamiento" };
+          break;
+        } else if (
+          classes[i].class === "disk jockey" ||
+          classes[i].class === "musician" ||
+          classes[i].class === "entertainer" ||
+          classes[i].class === "disco" ||
+          classes[i].class === "nightclub"
+        ) {
+          output = { value: "Entretenimiento" };
+          break;
+        } else {
+          output = { value: "Clases" };
         }
-        res.status(200).send(output)
       }
+      res.status(200).send(output);
     }
-  );
+  });
 };
 
-
-
-
-app.post('/imageClassification', (req, res) => imageProfileClassification(req, res));
-app.post('/languageClassifier', (req, res) => languageClassifier(req, res));
-app.post('/toneAnalyser', (req, res) => toneAnalysis(req, res));
-app.post('/imageStreamingClassifier', (req, res) => imageStreamingClassification(req, res));
+app.post("/imageClassification", (req, res) =>
+  imageProfileClassification(req, res)
+);
+app.post("/languageClassifier", (req, res) => languageClassifier(req, res));
+app.post("/toneAnalyser", (req, res) => toneAnalysis(req, res));
+app.post("/imageStreamingClassifier", (req, res) =>
+  imageStreamingClassification(req, res)
+);
 
 exports.routes = functions.https.onRequest(app);
