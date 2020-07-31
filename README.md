@@ -15,7 +15,7 @@
 
 # Project Roadmap
 [roadmap](road-map.md)
-![RoadMap](/Images/RoadMap_Kairos.png)
+![RoadMap](/Images/RoadMap_Kairos.jpg)
 
 # Getting Started
 ## Installing
