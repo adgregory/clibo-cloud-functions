@@ -13,6 +13,19 @@
 *	**People Area:** Maximum number of people that can be in an establishment depending upon its area.
 
 
+### Variable Importance
+![Variable Importance](/Images/importance.jpg)
 
+
+### Metrics of chosen model.
+
+| Metric | Cross Validation Score |
+| ------ | ------ |
+| Explained Variance | [0.989][PlDb] |
+| GitHub | [plugins/github/README.md][PlGh] |
+| Google Drive | [plugins/googledrive/README.md][PlGd] |
+| OneDrive | [plugins/onedrive/README.md][PlOd] |
+| Medium | [plugins/medium/README.md][PlMe] |
+| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
 
 
