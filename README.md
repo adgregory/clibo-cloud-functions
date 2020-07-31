@@ -67,7 +67,7 @@ n. [Acknolwedgemnts](#ackwoledgments)
 
 * [**Francisco Javier Gonzalez Rey**](https://www.linkedin.com/in/franciscogonzalez17/)
 * [**Carlos Fernando Infante Montoya**](https://www.linkedin.com/in/carlosinfante98/)
-* **Santiago Forero**
+* [**Santiago Forero**](https://www.linkedin.com/in/dasafodev/)
 * **Manuela Mariño**
 * [**Alvin David Gregory Tatis**](https://www.linkedin.com/in/alvin-david-gregory-tatis-484052199/)
 
