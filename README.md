@@ -1,14 +1,30 @@
-# Clibo Cloud Functions
-[something](https://developer.ibm.com/callforcode/)
-[roadmap](https://github.com/adgregory/clibo-cloud-functions/blob/master/road-map.md)
+# Kairos
 
-# Something else
+
+# Short Description
+## What's the problem?
+## How can techonology help?
+## The idea
+
+# Demo Video
+
+# Kairos Architecture
 ![Architecture](/Images/Architecture_Kairos.png)
-Format: ![Alt Text](url)
+# Long Description
 
 
+# Project Roadmap
+[roadmap](road-map.md)
+![RoadMap](/Images/RoadMap_Kairos.png)
 
-# 
+# Getting Started
+## Installing
+
+# Running the Tests
+
+# Live Demo
+
+# Build With
 
 # Authors
 
