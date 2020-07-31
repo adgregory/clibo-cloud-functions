@@ -5,3 +5,17 @@
 # Something else
 ![Architecture](/Images/Architecture_Kairos.png)
 Format: ![Alt Text](url)
+
+
+
+# 
+
+# Authors
+
+* **Francisco Javier Gonzalez Rey**
+* **Carlos Infante**
+* **Santiago Forero**
+* **Manuela Mariño**
+* **Alvin David Gregory Tatis**
+
+# Ackwoledgments
