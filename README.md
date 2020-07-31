@@ -28,7 +28,7 @@ Watch
 <a name="Architecture"></a>
 # Kairos Architecture
 <!--![Architecture](/Images/Architecture_Kairos.png)-->
-[/Images/Architecture_Kairos.png](https://www.youtube.com/watch?v=T8bJ4dDF-fA)
+[![Architecture](/Images/Architecture_Kairos.png)](https://www.youtube.com/watch?v=T8bJ4dDF-fA)
 1. User/admin registers to Kairos developed with Flutter.
 2. Flutter connects with Backend for authentification. 
 3. Backend does requests to IBM APIs for predictions.
