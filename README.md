@@ -8,7 +8,7 @@
 4. [Long Description](#Long_Description)
 5. [RoadMap](#roadmap)
 6. [Getting Started](#Getting_Started)
-<!--7. [Running Test](#Running_test)-->
+7. [Machine Learning Model](#machine)
 8. [Live Demo](#Live_Demo)
 9. [Buld With](#Technologies)
 10. [Authors](#Authors)
@@ -41,7 +41,7 @@ Watch the video below to understand Kairo's solution!
 
 <a name="Long_Description"></a>
 # Long Description
-See [Long_Description.md](long-description-1.md)
+See [Kairos Complete Description.md](long-description-1.md)
 
 
 <a name="roadmap"></a>
@@ -56,8 +56,10 @@ See [ROADMAP.md](road-map.md)
 Download the APK for Android from [here]
 
 
-<a name="Running_test"></a>
-<!--# Running the Tests-->
+<a name="machine"></a>
+# Machine Learning Model
+See [Kairos Machine Learning Model](kairos-ml-model.md)
+
 
 <a name="Live_Demo"></a>
 # Live Demo
