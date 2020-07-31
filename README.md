@@ -71,11 +71,11 @@
 <a name="Authors"></a>
 # Authors
 
-* [**Francisco Javier Gonzalez Rey**](https://www.linkedin.com/in/franciscogonzalez17/)
-* [**Carlos Fernando Infante Montoya**](https://www.linkedin.com/in/carlosinfante98/)
-* [**Santiago Forero**](https://www.linkedin.com/in/dasafodev/)
-* **Manuela Mariño**
-* [**Alvin David Gregory Tatis**](https://www.linkedin.com/in/alvin-david-gregory-tatis-484052199/)
+* [**Francisco Javier Gonzalez Rey**](https://www.linkedin.com/in/franciscogonzalez17/) - Full Stack Developer
+* [**Carlos Fernando Infante Montoya**](https://www.linkedin.com/in/carlosinfante98/) - Frontend Developer
+* [**Santiago Forero**](https://www.linkedin.com/in/dasafodev/) - Frontend Developer
+* **Manuela Mariño** - Product Manager
+* [**Alvin David Gregory Tatis**](https://www.linkedin.com/in/alvin-david-gregory-tatis-484052199/) - Data Scientist
 
 <a name="ackwoledgments"></a>
 # Ackwoledgments
