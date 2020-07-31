@@ -24,11 +24,11 @@
 <a name="video"></a>
 # Demo Video
 Watch the video below to understand Kairo's solution!
-
+[![Kairos Video](/Images/front_Image.jpg)](https://www.youtube.com/watch?v=4oiZdbwxUuQ)
 
 <a name="Architecture"></a>
 # Kairos Architecture
-![Architecture](/Images/Architecture_Kairos.png)
+![Architecture](/Images/Architecture_Kairos.jpg)
 1. User/admin registers to Kairos developed with Flutter.
 2. Flutter connects with Backend for authentification. 
 3. Backend does requests to IBM APIs for predictions.
