@@ -29,3 +29,6 @@
 | R2 | 0.989 |
 
 
+### Graphical Explanation of model
+
+![Graphical Explanation ML Model](/Images/ml-model.jpg)
