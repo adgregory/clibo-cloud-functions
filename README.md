@@ -28,10 +28,10 @@
 
 # Authors
 
-* **Francisco Javier Gonzalez Rey**
-* **Carlos Infante**
+* [**Francisco Javier Gonzalez Rey**](https://www.linkedin.com/in/franciscogonzalez17/)
+* [**Carlos Fernando Infante Montoya**](https://www.linkedin.com/in/carlosinfante98/)
 * **Santiago Forero**
 * **Manuela Mariño**
-* **Alvin David Gregory Tatis**
+* [**Alvin David Gregory Tatis**](https://www.linkedin.com/in/alvin-david-gregory-tatis-484052199/)
 
 # Ackwoledgments
