@@ -8,7 +8,7 @@
 4. [Long Description](#Long_Description)
 5. [RoadMap](#roadmap)
 6. [Getting Started](#Getting_Started)
-7. [Running Test](#Running_test)
+<!--7. [Running Test](#Running_test)-->
 8. [Live Demo](#Live_Demo)
 9. [Buld With](#Technologies)
 10. [Authors](#Authors)
@@ -23,34 +23,47 @@
 
 <a name="video"></a>
 # Demo Video
-
+Watch 
 
 <a name="Architecture"></a>
 # Kairos Architecture
-![Architecture](/Images/Architecture_Kairos.png)
-
+<!--![Architecture](/Images/Architecture_Kairos.png)-->
+[/Images/Architecture_Kairos.png](https://www.youtube.com/watch?v=T8bJ4dDF-fA)
+1. User/admin registers to Kairos developed with Flutter.
+2. Flutter connects with Backend for authentification. 
+3. Backend does requests to IBM APIs for predictions.
+4. IBM APIs return corresponding values to backend.
+5. Backend does requests to external APIs for predictions.
+6. External APIs return corresponding values to backend.
+7. Backend requests Firebase Cloud Messaging for notifications.
+8. Firebase Cloud Messaging sends notifications to devices.
 
 
 <a name="Long_Description"></a>
 # Long Description
-
+See [Long_Description.md](long_description.md)
 
 
 <a name="roadmap"></a>
 # Project Roadmap
-[roadmap](road-map.md)
-![RoadMap](/Images/RoadMap_Kairos.jpg)
+See [ROADMAP.md](road-map.md)
+<!--![RoadMap](/Images/RoadMap_Kairos.jpg)-->
 
 
 <a name="Getting_Started"></a>
 # Getting Started
 ## Installing
+Download the APK from [here]
+
 
 <a name="Running_test"></a>
-# Running the Tests
+<!--# Running the Tests-->
 
 <a name="Live_Demo"></a>
 # Live Demo
+1. Check the flow of the administrator [here]
+2. Check the flow of the user [here]
+
 
 
 <a name="Technologies"></a>
