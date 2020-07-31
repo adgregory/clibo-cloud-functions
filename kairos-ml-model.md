@@ -1,5 +1,9 @@
 # Kairos Machine Learning Model
 
+### Graphical Explanation of model
+
+![Graphical Explanation ML Model](/Images/ml-model.jpg)
+
 ### Explanation of each variable:
 * **Temperature:** Current air temperature at the geolocation selected.
 *	**Precipitations:** An hourly maximum probability of precipitation.
@@ -27,8 +31,3 @@
 | MedAE | 0.015 |
 | RMSE | 0.027 |
 | R2 | 0.989 |
-
-
-### Graphical Explanation of model
-
-![Graphical Explanation ML Model](/Images/ml-model.jpg)
