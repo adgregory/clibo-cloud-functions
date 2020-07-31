@@ -3,10 +3,10 @@
 
 # Contents
 1. [Short Description](#Short_Description)
-2. [Kairos Motivation](#video)
-3. [Architecture](#Architecture)
-4. [Long Description](#Long_Description)
-5. [RoadMap](#roadmap)
+2. [Kairos Demo Video](#video)
+3. [Kairos Architecture](#Architecture)
+4. [Complete Description](#Long_Description)
+5. [Kairos RoadMap](#roadmap)
 6. [Getting Started](#Getting_Started)
 7. [Machine Learning Model](#machine)
 8. [Live Demo](#Live_Demo)
@@ -22,7 +22,7 @@
 
 
 <a name="video"></a>
-# Demo Video
+# Kairos Demo Video
 Watch the video below to understand Kairo's solution!
 [![Kairos Video](/Images/front_Image.jpg)](https://www.youtube.com/watch?v=4oiZdbwxUuQ)
 
@@ -40,12 +40,12 @@ Watch the video below to understand Kairo's solution!
 
 
 <a name="Long_Description"></a>
-# Long Description
+# Complete Description
 See [Kairos Complete Description.md](long-description-1.md)
 
 
 <a name="roadmap"></a>
-# Project Roadmap
+# Kairos Roadmap
 See [ROADMAP.md](road-map.md)
 <!--![RoadMap](/Images/RoadMap_Kairos.jpg)-->
 
