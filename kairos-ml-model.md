@@ -21,11 +21,11 @@
 
 | Metric | Cross Validation Score |
 | ------ | ------ |
-| Explained Variance | [0.989][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
+| Explained Variance | 0.989 |
+| MAE | 0.019 |
+| MSE | 0.001 |
+| MedAE | 0.015 |
+| RMSE | 0.027 |
+| R2 | 0.989 |
 
 
