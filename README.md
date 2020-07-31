@@ -62,14 +62,14 @@ See [Kairos Machine Learning Model](kairos-ml-model.md)
 
 
 <a name="Live_Demo"></a>
-# Live Demo
+# Live Demo 📋
 1. Check the flow of the administrator [here]
 2. Check the flow of the user [here]
 
 
 
 <a name="Technologies"></a>
-# Build With
+# Build With 🛠️
 
 * [Flutter](https://flutter.dev/)- Used for app development.
 * [Nodejs](https://nodejs.org/en/) - Used to build the Heroku backend. Manages authentification, API calls, turns and queues management, usar entrance to establishments logic.
@@ -84,7 +84,7 @@ See [Kairos Machine Learning Model](kairos-ml-model.md)
 * [Position Stack](https://positionstack.com/) - API used to get person's geolocation. 
  
 <a name="Authors"></a>
-# Authors
+# Authors ✒️
 
 * [**Francisco Javier Gonzalez Rey**](https://www.linkedin.com/in/franciscogonzalez17/) - Full Stack Developer
 * [**Carlos Fernando Infante Montoya**](https://www.linkedin.com/in/carlosinfante98/) - Frontend Developer
