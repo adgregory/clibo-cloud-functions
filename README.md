@@ -3,7 +3,7 @@
 
 # Contents
 1. [Short Description](#Short_Description)
-2. [Kairos Motivation] (#video)
+2. [Kairos Motivation](#video)
 3. [Architecture](#Architecture)
 4. [Long Description](#Long_Description)
 5. [RoadMap](#roadmap)
