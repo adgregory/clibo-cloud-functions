@@ -56,17 +56,17 @@
 <a name="Technologies"></a>
 # Build With
 
-* [Flutter](https://flutter.dev/)
-* [Nodejs](https://nodejs.org/en/)
-* [PostgreSQL](https://www.ibm.com/cloud/databases-for-postgresql)
-* [Watson Machine Learning](https://www.ibm.com/cloud/machine-learning#:~:text=Deploy%20and%20run%20AI%20models,at%20scale%20across%20any%20cloud.)
-* [The Weather Company](https://www.ibm.com/weather)
-* [Globalization Pipeline](https://www.ibm.com/cloud/globalization-pipeline)
-* [Firebase](https://firebase.google.com/)
-* [HERE](https://www.here.com/)
-* [Avuxi](https://www.avuxi.com/)
-* [Calendarific](https://calendarific.com/)
-* [Position Stack](https://positionstack.com/)
+* [Flutter](https://flutter.dev/)- Used for app development.
+* [Nodejs](https://nodejs.org/en/) - Used to build the Heroku backend. Manages authentification, API calls, turns and queues management, usar entrance to establishments logic.
+* [Firebase](https://firebase.google.com/) - Used for notifications and external authentification. 
+* [PostgreSQL](https://www.ibm.com/cloud/databases-for-postgresql) - Used to storage all the app data. 
+* [Watson Machine Learning](https://www.ibm.com/cloud/machine-learning#:~:text=Deploy%20and%20run%20AI%20models,at%20scale%20across%20any%20cloud.) - Used to train the Machine Learning model.
+* [Globalization Pipeline](https://www.ibm.com/cloud/globalization-pipeline) - API used to translate the application to 9 different languages.
+* [The Weather Company](https://www.ibm.com/weather) - API to get weather predictions. 
+* [HERE](https://www.here.com/) - API used to know distance between user and establishment.
+* [Avuxi](https://www.avuxi.com/) - API used to get places popularity.
+* [Calendarific](https://calendarific.com/) - API used to get holidays.
+* [Position Stack](https://positionstack.com/) - API used to get person's geolocation. 
  
 <a name="Authors"></a>
 # Authors
@@ -80,6 +80,5 @@
 <a name="ackwoledgments"></a>
 # Ackwoledgments
 
-* Walter for his video, annimations skills, and user interface experience.
-
+* [Walter Torres](https://www.linkedin.com/in/walter-torres-90b862180/) for his video, annimations skills, and user interface experience.
 
