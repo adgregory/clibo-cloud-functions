@@ -41,7 +41,7 @@ Watch the video below to understand Kairo's solution!
 
 <a name="Long_Description"></a>
 # Long Description
-See [Long_Description.md](long_description.md)
+See [Long_Description.md](long_description-1.md)
 
 
 <a name="roadmap"></a>
@@ -53,7 +53,7 @@ See [ROADMAP.md](road-map.md)
 <a name="Getting_Started"></a>
 # Getting Started
 ## Installing
-Download the APK from [here]
+Download the APK for Android from [here]
 
 
 <a name="Running_test"></a>
