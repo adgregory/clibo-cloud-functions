@@ -41,7 +41,7 @@ Watch the video below to understand Kairo's solution!
 
 <a name="Long_Description"></a>
 # Long Description
-See [Long_Description.md](long_description-1.md)
+See [Long_Description.md](long-description-1.md)
 
 
 <a name="roadmap"></a>
